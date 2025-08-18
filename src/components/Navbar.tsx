@@ -11,7 +11,7 @@ function Navbar() {
           <Link
             href={'/'}
             className=" text-lg sm:text-xl font-bold text-primary font-mono tracking-wider cursor-pointer hover:opacity-70 duration-300">
-            <h1>Socially</h1>
+            <h1>Nexora</h1>
           </Link>
         </div>
 
