@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signIn, signUp } from '@/server/users';
+import { signIn, signUp } from '@/server/user';
 import Link from 'next/link';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';

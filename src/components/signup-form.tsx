@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { signUp } from '@/server/users';
+import { signUp } from '@/server/user';
 import Link from 'next/link';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
