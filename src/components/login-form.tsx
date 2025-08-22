@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { signIn, signUp } from '@/server/user';
 import Link from 'next/link';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
@@ -31,8 +30,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       password: '',
     },
   });
-
-  const router = useRouter();
 
   const signInWithGoogle = async () => {
     await authClient.signIn.social({
