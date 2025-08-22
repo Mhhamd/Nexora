@@ -1,0 +1,77 @@
+'use client';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { User, LogOutIcon, Settings } from 'lucide-react';
+import { logOut } from '@/server/user';
+import Link from 'next/link';
+
+type SessionData = {
+  user: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+};
+
+function UserMenu({ user }: SessionData) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="cursor-pointer flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={user.image ?? '/avatar.png'} alt={user.name || 'User'} />
+            <AvatarFallback>{user.name?.[0] || user.email?.split('@')[0] || 'U'}</AvatarFallback>
+          </Avatar>
+          <span className="lg:inline hidden">{user.name || user.email?.split('@')[0] || 'User'}</span>
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel className="flex items-center gap-2">
+          <Avatar className="h-6 w-6">
+            <AvatarImage src={user.image ?? '/avatar.png'} alt={user.name || user.email || 'User'} />
+            <AvatarFallback>{user.name?.[0] || user.email?.split('@')[0] || 'U'}</AvatarFallback>
+          </Avatar>
+          <span>{user.name || user.email || 'User'}</span>
+        </DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href={`/profile/${user.email?.split('@')[0]}`} className="flex items-center gap-2">
+            <User size={4} />
+            Profile
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link href="/settings" className="flex items-center gap-2">
+            <Settings size={4} />
+            Settings
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+        <form action={logOut}>
+          <DropdownMenuItem asChild>
+            <Button variant="ghost" className="w-full justify-start flex items-center gap-2">
+              <LogOutIcon size={4} />
+              Logout
+            </Button>
+          </DropdownMenuItem>
+        </form>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+export default UserMenu;

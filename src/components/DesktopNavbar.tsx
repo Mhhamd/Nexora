@@ -1,9 +1,9 @@
-import { BellIcon, HomeIcon, LogInIcon, LogOutIcon, User, UserPlusIcon } from 'lucide-react';
+import { BellIcon, HomeIcon, LogInIcon, UserPlusIcon } from 'lucide-react';
 import ModeToggle from './ModeToggle';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { getSession } from '@/server/session';
-import { logOut } from '@/server/user';
+import UserMenu from './UserMenu';
 
 async function DesktopNavbar() {
   const session = await getSession();
@@ -27,19 +27,7 @@ async function DesktopNavbar() {
             </Link>
           </Button>
 
-          <Button variant={'ghost'} className="cursor-pointer" asChild>
-            <Link href={`/profile`}>
-              <User />
-              <span className="lg:inline hidden">Profile</span>
-            </Link>
-          </Button>
-          <form action={logOut}>
-            <Button variant={'secondary'} className="cursor-pointer">
-              <LogOutIcon />
-              <span className="lg:inline hidden">Logout</span>
-            </Button>
-          </form>
-          {/* TODO: Add user menu */}
+          <UserMenu user={session.user} />
         </>
       ) : (
         <>
