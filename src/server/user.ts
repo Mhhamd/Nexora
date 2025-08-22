@@ -1,7 +1,9 @@
 'use server';
 
 import { auth } from '@/lib/auth';
-import { authClient } from '@/lib/auth-client';
+import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export const signUp = async (email: string, password: string, name: string) => {
   try {
@@ -25,9 +27,19 @@ export const signIn = async (email: string, password: string) => {
         email,
         password,
       },
+      headers: await headers(),
     });
+    revalidatePath('/', 'layout');
+
     return { success: true, message: 'Signed in successfully' };
   } catch (error: any) {
     return { success: false, message: error.message };
   }
+};
+
+export const logOut = async () => {
+  await auth.api.signOut({
+    headers: await headers(),
+  });
+  redirect('/login');
 };

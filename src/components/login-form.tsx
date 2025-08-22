@@ -44,13 +44,19 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    const { success, message } = await signIn(values.email, values.password);
-    if (success) {
-      setIsLoading(false);
-      router.replace('/');
-      toast.success(message as string);
-    } else {
-      toast.error(message as string);
+    try {
+      const { success, message } = await signIn(values.email, values.password);
+      if (success) {
+        setIsLoading(false);
+        toast.success(message as string);
+        window.location.href = '/';
+      } else {
+        toast.error(message as string);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
       setIsLoading(false);
     }
   }
