@@ -1,4 +1,4 @@
-import { BellIcon, HomeIcon, LogOutIcon, User } from 'lucide-react';
+import { BellIcon, HomeIcon, LogInIcon, LogOutIcon, User, UserPlusIcon } from 'lucide-react';
 import ModeToggle from './ModeToggle';
 import { Button } from './ui/button';
 import Link from 'next/link';
@@ -45,11 +45,13 @@ async function DesktopNavbar() {
         <>
           <Button variant={'default'} className="cursor-pointer" asChild>
             <Link href={`/login`}>
+              <LogInIcon />
               <span className="lg:inline hidden">Login</span>
             </Link>
           </Button>
           <Button variant={'secondary'} className="cursor-pointer" asChild>
             <Link href={`/sign-up`}>
+              <UserPlusIcon />
               <span className="lg:inline hidden">Sign up</span>
             </Link>
           </Button>
