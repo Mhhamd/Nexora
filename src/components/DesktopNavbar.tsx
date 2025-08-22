@@ -34,7 +34,7 @@ async function DesktopNavbar() {
             </Link>
           </Button>
           <form action={logOut}>
-            <Button variant={'ghost'} className="cursor-pointer">
+            <Button variant={'secondary'} className="cursor-pointer">
               <LogOutIcon />
               <span className="lg:inline hidden">Logout</span>
             </Button>
