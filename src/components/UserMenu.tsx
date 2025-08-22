@@ -36,7 +36,7 @@ function UserMenu({ user }: SessionData) {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56 space-y-2">
         <DropdownMenuLabel className="flex items-center gap-2">
           <Avatar className="h-6 w-6">
             <AvatarImage src={user.image ?? '/avatar.png'} alt={user.name || user.email || 'User'} />
@@ -47,14 +47,14 @@ function UserMenu({ user }: SessionData) {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={`/profile/${user.email?.split('@')[0]}`} className="flex items-center gap-2">
+          <Link href={`/profile/${user.email?.split('@')[0]}`} className="flex items-center gap-2 cursor-pointer">
             <User size={4} />
             Profile
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href="/settings" className="flex items-center gap-2">
+          <Link href="/settings" className="flex items-center gap-2 cursor-pointer">
             <Settings size={4} />
             Settings
           </Link>
@@ -63,7 +63,7 @@ function UserMenu({ user }: SessionData) {
         <DropdownMenuSeparator />
         <form action={logOut}>
           <DropdownMenuItem asChild>
-            <Button variant="ghost" className="w-full justify-start flex items-center gap-2">
+            <Button variant="ghost" className="w-full justify-start flex items-center gap-2 cursor-pointer">
               <LogOutIcon size={4} />
               Logout
             </Button>
