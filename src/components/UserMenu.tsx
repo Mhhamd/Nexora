@@ -11,7 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { User, LogOutIcon, Settings } from 'lucide-react';
-import { logOut } from '@/server/user';
+import { logOut } from '@/server/auth';
 import Link from 'next/link';
 
 type SessionData = {
@@ -29,7 +29,7 @@ function UserMenu({ user }: SessionData) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="cursor-pointer flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={user.image ?? '/avatar.png'} alt={user.name || 'User'} />
+            <AvatarImage src={user.image ?? undefined} alt={user.name || 'User'} />
             <AvatarFallback>{user.name?.[0] || user.email?.split('@')[0] || 'U'}</AvatarFallback>
           </Avatar>
           <span className="lg:inline hidden">{user.name || user.email?.split('@')[0] || 'User'}</span>
@@ -39,7 +39,7 @@ function UserMenu({ user }: SessionData) {
       <DropdownMenuContent align="end" className="w-56 space-y-2">
         <DropdownMenuLabel className="flex items-center gap-2">
           <Avatar className="h-6 w-6">
-            <AvatarImage src={user.image ?? '/avatar.png'} alt={user.name || user.email || 'User'} />
+            <AvatarImage src={user.image ?? undefined} alt={user.name || user.email || 'User'} />
             <AvatarFallback>{user.name?.[0] || user.email?.split('@')[0] || 'U'}</AvatarFallback>
           </Avatar>
           <span>{user.name || user.email || 'User'}</span>
