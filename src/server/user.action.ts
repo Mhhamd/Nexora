@@ -17,6 +17,12 @@ export async function getCurrentUser() {
       location: true,
       bio: true,
       createdAt: true,
+      _count: {
+        select: {
+          followers: true,
+          following: true,
+        },
+      },
     },
   });
   return user;
