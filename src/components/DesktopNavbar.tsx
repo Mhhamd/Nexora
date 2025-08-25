@@ -1,12 +1,16 @@
+'use client';
 import { BellIcon, HomeIcon, LogInIcon, UserPlusIcon } from 'lucide-react';
 import ModeToggle from './ModeToggle';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { getSession } from '@/server/session';
 import UserMenu from './UserMenu';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
-async function DesktopNavbar() {
-  const session = await getSession();
+function DesktopNavbar() {
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
+
   return (
     <div className="sm:flex items-center gap-5 hidden">
       <ModeToggle />
@@ -18,7 +22,7 @@ async function DesktopNavbar() {
         </Link>
       </Button>
 
-      {session ? (
+      {isAuthenticated && user ? (
         <>
           <Button variant={'ghost'} className="cursor-pointer" asChild>
             <Link href={'/notifications'}>
@@ -27,7 +31,7 @@ async function DesktopNavbar() {
             </Link>
           </Button>
 
-          <UserMenu user={session.user} />
+          <UserMenu user={user} />
         </>
       ) : (
         <>
