@@ -16,7 +16,6 @@ export async function getCurrentUser() {
       website: true,
       location: true,
       bio: true,
-      createdAt: true,
       _count: {
         select: {
           followers: true,
