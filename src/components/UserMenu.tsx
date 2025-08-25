@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button';
 import { User, LogOutIcon, Settings } from 'lucide-react';
 import { logOut } from '@/server/auth';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '@/redux/slices/userSlice';
 
 type SessionData = {
   user: {
@@ -24,6 +26,7 @@ type SessionData = {
 };
 
 function UserMenu({ user }: SessionData) {
+  const dispatch = useDispatch();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,14 +64,18 @@ function UserMenu({ user }: SessionData) {
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <form action={logOut}>
-          <DropdownMenuItem asChild>
-            <Button variant="ghost" className="w-full justify-start flex items-center gap-2 cursor-pointer">
-              <LogOutIcon size={4} />
-              Logout
-            </Button>
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem asChild>
+          <Button
+            onClick={() => {
+              dispatch(clearUser());
+              logOut();
+            }}
+            variant="ghost"
+            className="w-full justify-start flex items-center gap-2 cursor-pointer">
+            <LogOutIcon size={4} />
+            Logout
+          </Button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
