@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import { Toaster } from '@/components/ui/sonner';
 import Sidebar from '@/components/Sidebar';
 import LayoutWrapper from '@/components/LayoutWrapper';
+import { ReduxProvider } from '@/redux/Provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,14 +32,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute={'class'} defaultTheme="system" enableSystem disableTransitionOnChange>
-          <div className="min-h-screen">
-            <Navbar />
+        <ReduxProvider>
+          <ThemeProvider attribute={'class'} defaultTheme="system" enableSystem disableTransitionOnChange>
+            <div className="min-h-screen">
+              <Navbar />
 
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </div>
-          <Toaster position="top-center" />
-        </ThemeProvider>
+              <LayoutWrapper>{children}</LayoutWrapper>
+            </div>
+            <Toaster position="top-center" />
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
