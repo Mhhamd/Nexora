@@ -14,6 +14,9 @@ import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { authClient } from '@/lib/auth-client';
+import { getCurrentUser } from '@/server/user.action';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/slices/userSlice';
 
 const formSchema = z.object({
   email: z.email().min(1),
@@ -22,6 +25,7 @@ const formSchema = z.object({
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,6 +47,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     try {
       const { success, message } = await signIn(values.email, values.password);
       if (success) {
+        const user = await getCurrentUser();
+        dispatch(setUser(user));
+
         setIsLoading(false);
         toast.success(message as string);
         window.location.href = '/';
