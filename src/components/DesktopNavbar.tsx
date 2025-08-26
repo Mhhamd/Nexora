@@ -3,7 +3,6 @@ import { BellIcon, HomeIcon, LogInIcon, UserPlusIcon } from 'lucide-react';
 import ModeToggle from './ModeToggle';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { getSession } from '@/server/session';
 import UserMenu from './UserMenu';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';

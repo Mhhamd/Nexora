@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { authClient } from '@/lib/auth-client';
 import { getCurrentUser } from '@/server/user.action';
 import { setUser } from '@/redux/slices/userSlice';
 import { RootState } from '@/redux/store';
