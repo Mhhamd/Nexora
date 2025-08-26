@@ -8,8 +8,10 @@ interface User {
   bio: string;
   website: string;
   location: string;
-  followers: number;
-  following: number;
+  _count: {
+    followers: number;
+    following: number;
+  };
 }
 
 interface UserState {
