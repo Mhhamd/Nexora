@@ -50,12 +50,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
         const user = await getCurrentUser();
         dispatch(setUser(user));
 
-        setIsLoading(false);
         toast.success(message as string);
         window.location.href = '/';
       } else {
         toast.error(message as string);
-        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
