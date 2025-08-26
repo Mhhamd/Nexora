@@ -36,13 +36,13 @@ function DesktopNavbar() {
       ) : (
         <>
           <Button variant={'default'} className="cursor-pointer" asChild>
-            <Link href={`/login`}>
+            <Link href={`/login`} prefetch>
               <LogInIcon />
               <span className="lg:inline hidden">Login</span>
             </Link>
           </Button>
           <Button variant={'secondary'} className="cursor-pointer" asChild>
-            <Link href={`/sign-up`}>
+            <Link href={`/sign-up`} prefetch>
               <UserPlusIcon />
               <span className="lg:inline hidden">Sign up</span>
             </Link>
