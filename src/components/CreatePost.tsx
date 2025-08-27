@@ -59,7 +59,7 @@ function CreatePost() {
               onKeyDown={handleKeyDown}
               onChange={(e) => setContent(e.target.value)}
               placeholder="What's on your mind?"
-              className="min-h-[120px] resize-none border-none p-0 focus-visible:ring-0 text-base !bg-background"
+              className="min-h-[70px] resize-none border-none p-0 focus-visible:ring-0 text-base !bg-background pb-5"
             />
           </div>
 
