@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
 type Post = Posts[number];
@@ -26,7 +27,10 @@ function PostCard({ post }: { post: Post }) {
   }, [post.likes, session.data?.user.id]);
 
   const handleLike = async () => {
-    if (isLiking || !session.data?.user) return;
+    if (isLiking || !session.data?.user) {
+      toast.warning("Sign in to like this content");
+      return;
+    }
     try {
       setIsLiking(true);
       setIsLiked((prev) => !prev);
@@ -67,7 +71,7 @@ function PostCard({ post }: { post: Post }) {
           </div>
 
           {isOwner && (
-            <Tooltip>
+            <Tooltip delayDuration={800}>
               <TooltipTrigger asChild>
                 <Button variant="ghost" className="hover:text-primary cursor-pointer flex-shrink-0">
                   <TrashIcon size={16} />
@@ -90,15 +94,22 @@ function PostCard({ post }: { post: Post }) {
 
         {/* Post Actions */}
         <div className="flex items-start gap-4 mt-4">
-          <Button
-            onClick={handleLike}
-            variant={"ghost"}
-            className={`cursor-pointer text-muted-foreground gap-2 ${
-              isLiked ? "text-red-500 hover:text-red-600" : "hover:text-red-500"
-            }`}>
-            {isLiked ? <Heart className="size-5 fill-current" /> : <Heart className="size-5" />}
-            <span>{likes}</span>
-          </Button>
+          <Tooltip delayDuration={800}>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={handleLike}
+                variant={"ghost"}
+                className={`cursor-pointer text-muted-foreground gap-2 ${
+                  isLiked ? "text-red-500 hover:text-red-600" : "hover:text-red-500"
+                }`}>
+                {isLiked ? <Heart className="size-5 fill-current" /> : <Heart className="size-5" />}
+                <span>{likes}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Like</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </CardContent>
     </Card>
