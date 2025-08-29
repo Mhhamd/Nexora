@@ -126,8 +126,8 @@ export const toggleLike = async (postId: string) => {
             ]
           : []),
       ]);
-      revalidatePath("/");
     }
+    revalidatePath("/");
   } catch (error) {
     console.error("Error in toggleLike", error);
     throw new Error("Failed to like post");
