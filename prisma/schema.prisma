@@ -98,8 +98,8 @@ model Notification {
     creatorId String
     type      NotificationType
     read      Boolean          @default(false)
-    postId    String
-    commentId String
+    postId    String?
+    commentId String?
     createdAt DateTime         @default(now())
 
     //Relations
