@@ -133,3 +133,29 @@ export const toggleLike = async (postId: string) => {
     throw new Error("Failed to like post");
   }
 };
+
+export const deletePost = async (postId: string) => {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorId: true },
+    });
+
+    if (!post) return;
+
+    if (post.authorId !== user.id) throw new Error("Unauthorized - no delete permission");
+
+    await prisma.post.delete({
+      where: { id: postId },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete post", error);
+    return { success: false };
+  }
+};
