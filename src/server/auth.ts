@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const signUp = async (email: string, password: string, name: string) => {
   try {
@@ -14,7 +14,7 @@ export const signUp = async (email: string, password: string, name: string) => {
         name,
       },
     });
-    return { success: true, message: 'Signed up successfully' };
+    return { success: true, message: "Signed up successfully" };
   } catch (error: any) {
     return { success: false, message: error.message };
   }
@@ -29,9 +29,9 @@ export const signIn = async (email: string, password: string) => {
       },
       headers: await headers(),
     });
-    revalidatePath('/', 'layout');
+    revalidatePath("/", "layout");
 
-    return { success: true, message: 'Signed in successfully' };
+    return { success: true, message: "Signed in successfully" };
   } catch (error: any) {
     return { success: false, message: error.message };
   }
@@ -41,5 +41,4 @@ export const logOut = async () => {
   await auth.api.signOut({
     headers: await headers(),
   });
-  redirect('/login');
 };
