@@ -1,16 +1,17 @@
 "use client";
-import { getPosts, toggleLike } from "@/server/post.action";
+import { deletePost, getPosts, toggleLike } from "@/server/post.action";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { authClient } from "@/lib/auth-client";
-import { Heart, TrashIcon } from "lucide-react";
+import { Heart, MessageCircleIcon, TrashIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import DeleteAlertDialog from "./DeleteAlertDialog";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
 type Post = Posts[number];
@@ -21,6 +22,8 @@ function PostCard({ post }: { post: Post }) {
   const [isLiked, setIsLiked] = useState(post.likes.some((like) => like.userId === session.data?.user.id));
   const [isLiking, setIsLiking] = useState(false);
   const [likes, setLikes] = useState(post._count.likes);
+  const [comments] = useState(post._count.comments);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setIsLiked(post.likes.some((like) => like.userId === session.data?.user.id));
@@ -42,6 +45,19 @@ function PostCard({ post }: { post: Post }) {
       setLikes(post._count.likes);
     } finally {
       setIsLiking(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (isDeleting) return;
+    try {
+      setIsDeleting(true);
+      const result = await deletePost(post.id);
+      if (result?.success) toast.success("Post deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete post");
+    } finally {
+      setIsDeleting(false);
     }
   };
   return (
@@ -70,18 +86,7 @@ function PostCard({ post }: { post: Post }) {
             </div>
           </div>
 
-          {isOwner && (
-            <Tooltip delayDuration={800}>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" className="hover:text-primary cursor-pointer flex-shrink-0">
-                  <TrashIcon size={16} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Delete</p>
-              </TooltipContent>
-            </Tooltip>
-          )}
+          {isOwner && <DeleteAlertDialog isDeleting={isDeleting} handleDelete={handleDelete} />}
         </div>
 
         {/* Post Content */}
@@ -110,6 +115,11 @@ function PostCard({ post }: { post: Post }) {
               <p>Like</p>
             </TooltipContent>
           </Tooltip>
+
+          <Button variant={"ghost"} className={`cursor-pointer text-muted-foreground gap-2`}>
+            <MessageCircleIcon className="size-5" />
+            <span>{comments}</span>
+          </Button>
         </div>
       </CardContent>
     </Card>
