@@ -65,7 +65,7 @@ function PostCard({ post }: { post: Post }) {
       <CardContent className="px-4">
         {/* Post Header */}
         <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2 w-full">
             <Link
               className="flex items-center gap-2 truncate"
               href={`/profile/${post.author.email.split("@")[0]}`}
@@ -74,7 +74,7 @@ function PostCard({ post }: { post: Post }) {
                 <AvatarImage src={post.author.image ?? undefined} alt={post.author.name || "User"} />
                 <AvatarFallback>{post.author.name?.[0] || post.author.email?.split("@")[0] || "U"}</AvatarFallback>
               </Avatar>
-              <span className="truncate">{post.author.name}</span>
+              <span className="truncate">{post.author.name?.split(" ")[0]}</span>
             </Link>
 
             <div className="flex items-center gap-2 text-muted-foreground text-sm sm:text-base truncate">
