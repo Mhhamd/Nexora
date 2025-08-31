@@ -159,3 +159,43 @@ export const deletePost = async (postId: string) => {
     return { success: false };
   }
 };
+
+export const createComment = async (postId: string, content: string) => {
+  try {
+    const user = await getCurrentUser();
+    if (!user || !content) return;
+
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorId: true },
+    });
+
+    if (!post) return;
+
+    const [comment] = await prisma.$transaction(async () => {
+      const newComment = await prisma.comment.create({
+        data: {
+          content,
+          postId,
+          authorId: user.id,
+        },
+      });
+
+      if (user.id !== post.authorId) {
+        await prisma.notification.create({
+          data: {
+            type: "COMMENT",
+            creatorId: user.id,
+            userId: post.authorId,
+            commentId: newComment.id,
+            postId,
+          },
+        });
+      }
+
+      revalidatePath("/");
+      return [newComment];
+    });
+    return { success: true, comment };
+  } catch (error) {}
+};
