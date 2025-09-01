@@ -80,7 +80,12 @@ function CreatePost() {
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file.");
+        return;
+      }
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
       }
@@ -137,7 +142,14 @@ function CreatePost() {
           <div className="flex items-center justify-between pt-5">
             {/* TODO: Add image upload logic */}
             <div className="flex space-x-2">
-              <input ref={fileInputRef} onChange={handleImageChange} type="file" className="hidden" id="image" />
+              <input
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                id="image"
+              />
               <Button
                 disabled={isLoading}
                 variant={"ghost"}
