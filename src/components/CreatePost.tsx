@@ -123,7 +123,6 @@ function CreatePost() {
     return (
       <Card className="bg-background w-full ">
         <CardContent>
-          {/* TODO: Add posting logic */}
           <div className="space-x-4 flex">
             <Avatar className="size-10">
               <AvatarImage src={user.image} />
@@ -138,9 +137,10 @@ function CreatePost() {
               className="min-h-[70px] resize-none border-none p-0 focus-visible:ring-0 text-base !bg-background pb-5"
             />
           </div>
+
           <Separator />
+
           <div className="flex items-center justify-between pt-5">
-            {/* TODO: Add image upload logic */}
             <div className="flex space-x-2">
               <input
                 ref={fileInputRef}
