@@ -127,7 +127,15 @@ function PostCard({ post }: { post: Post }) {
         <div className="flex flex-col items-start gap-4 w-full mt-4">
           {post.content && <p className="ml-3">{post.content}</p>}
           {post.image && (
-            <Image className="w-full h-full rounded-lg" width={1200} height={800} src={post.image} alt={post.image} />
+            <Image
+              placeholder="blur"
+              blurDataURL={post.image}
+              className="w-full h-full rounded-lg"
+              width={1200}
+              height={800}
+              src={post.image}
+              alt={post.image}
+            />
           )}
         </div>
 
