@@ -171,8 +171,13 @@ function CreatePost() {
           </div>
           {imagePreview && image?.type.startsWith("image/") && (
             <div className="mt-2 relative inline-block">
-              <img className="w-30 rounded-md" src={imagePreview} alt={image?.name} />
+              <img
+                className={`w-30 rounded-md ${isLoading ? "opacity-50" : ""}`}
+                src={imagePreview}
+                alt={image?.name}
+              />
               <Button
+                disabled={isLoading}
                 onClick={removeImage}
                 variant={"secondary"}
                 className="absolute -top-2 -right-2 h-6 w-6 rounded-full cursor-pointer"
