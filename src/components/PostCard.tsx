@@ -40,7 +40,10 @@ function PostCard({ post }: { post: Post }) {
 
   const handleLike = async () => {
     if (isLiking) return;
-    if (!session.data?.user) toast.warning("Sign in to like this content");
+    if (!session.data?.user) {
+      toast.warning("Sign in to like this content");
+      return;
+    }
 
     try {
       setIsLiking(true);
