@@ -1,45 +1,14 @@
-"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RootState } from "@/redux/store";
-import { getRandomUsers, toggleFollow } from "@/server/user.action";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { getCurrentUser, getRandomUsers } from "@/server/user.action";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
-import { Button } from "./ui/button";
-import { toast } from "sonner";
-import { Loader2Icon } from "lucide-react";
+import FollowButton from "./FollowButton";
 
-type Users = Awaited<ReturnType<typeof getRandomUsers>>;
+async function WhoToFollow() {
+  const user = await getCurrentUser();
+  const randomUsers = await getRandomUsers();
 
-function WhoToFollow() {
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.user);
-  const [randomUsers, setRandomUsers] = useState<Users | []>();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleFollow = async (targetId: string) => {
-    setIsLoading(true);
-    try {
-      await toggleFollow(targetId);
-      toast.success("User followed successfully");
-    } catch (error) {
-      console.log("Error while following the user", error);
-      toast.error("Error following user");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const randomUsers = async () => {
-      const users = await getRandomUsers();
-      setRandomUsers(users);
-    };
-
-    randomUsers();
-  }, []);
-
-  if (isAuthenticated && user) {
+  if (user) {
     return (
       <Card className="bg-background ">
         <CardHeader>
@@ -64,9 +33,7 @@ function WhoToFollow() {
                     <p className="text-sm text-muted-foreground">{u._count.followers} Followers</p>
                   </div>
                 </Link>
-                <Button onClick={() => handleFollow(u.id)} className="cursor-pointer px-6" variant="secondary">
-                  {isLoading ? <Loader2Icon className="size-4 animate-spin" /> : "Follow"}
-                </Button>
+                <FollowButton userId={u.id} />
               </div>
             ))}
           </div>
