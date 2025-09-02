@@ -1,36 +1,36 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { signUp } from '@/server/auth';
-import Link from 'next/link';
-import { z } from 'zod';
-import { useRouter } from 'next/navigation';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useState } from 'react';
-import { LoaderCircle } from 'lucide-react';
-import { toast } from 'sonner';
-import { authClient } from '@/lib/auth-client';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { signUp } from "@/server/auth";
+import Link from "next/link";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 const formSchema = z.object({
   email: z.email().min(1),
-  name: z.string().min(3, 'Full Name must contain at least 3 character(s)'),
-  password: z.string().min(8, 'Password must contain at least 8 character(s)'),
+  name: z.string().min(3, "Full Name must contain at least 3 character(s)"),
+  password: z.string().min(8, "Password must contain at least 8 character(s)"),
 });
 
-export function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
+export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
-      password: '',
-      name: '',
+      email: "",
+      password: "",
+      name: "",
     },
   });
 
@@ -38,8 +38,8 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
 
   const signInWithGoogle = async () => {
     await authClient.signIn.social({
-      provider: 'google',
-      callbackURL: '/',
+      provider: "google",
+      callbackURL: "/",
     });
   };
 
@@ -48,7 +48,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
     const { success, message } = await signUp(values.email, values.password, values.name);
     if (success) {
       setIsLoading(false);
-      router.replace('/');
+      window.location.href = "/";
       toast.success(message as string);
     } else {
       toast.error(message as string);
@@ -57,7 +57,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
@@ -131,11 +131,11 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                     </a>
                   </div>
                   <Button disabled={isLoading} type="submit" className="w-full cursor-pointer">
-                    {isLoading ? <LoaderCircle className="animate-spin" size={24} /> : 'Sign up'}
+                    {isLoading ? <LoaderCircle className="animate-spin" size={24} /> : "Sign up"}
                   </Button>
                 </div>
                 <div className="text-center text-sm">
-                  Already have an account?{' '}
+                  Already have an account?{" "}
                   <Link href="/login" className="underline underline-offset-4">
                     Sign in
                   </Link>
