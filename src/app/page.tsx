@@ -13,7 +13,7 @@ export default async function Home() {
           <PostCard key={post.id} post={post} />
         ))}
       </div>
-      <div className="w-full lg:inline hidden">
+      <div className=" lg:inline hidden w-2/5 ">
         <WhoToFollow />
       </div>
     </div>
