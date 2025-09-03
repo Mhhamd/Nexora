@@ -40,12 +40,12 @@ function Sidebar() {
 
                 <div className="flex justify-between text-center">
                   <div>
-                    <p className="font-medium">{user?._count.following}</p>
+                    <p className="font-medium">{user?._count.followers}</p>
                     <p className="text-xs text-muted-foreground">Following</p>
                   </div>
                   <Separator orientation="vertical" />
                   <div>
-                    <p className="font-medium">{user?._count.followers}</p>
+                    <p className="font-medium">{user?._count.following}</p>
                     <p className="text-xs text-muted-foreground">Followers</p>
                   </div>
                 </div>
