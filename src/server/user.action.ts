@@ -70,7 +70,7 @@ export async function toggleFollow(targetId: string) {
         }),
       ]);
     }
-
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("Error in handleFollow:", error);
@@ -90,7 +90,7 @@ export async function getRandomUsers() {
 
           {
             NOT: {
-              followers: {
+              following: {
                 some: {
                   followerId: user.id,
                 },
@@ -107,10 +107,14 @@ export async function getRandomUsers() {
         _count: {
           select: {
             followers: true,
+            following: true,
           },
         },
       },
-      take: 4,
+      orderBy: {
+        id: "asc",
+      },
+      take: 3,
     });
 
     return randomUsers;
