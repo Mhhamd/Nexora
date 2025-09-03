@@ -6,12 +6,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 import { LinkIcon, MapPinIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useEffect } from "react";
+import { getCurrentUser } from "@/server/user.action";
+import { setUser } from "@/redux/slices/userSlice";
 
 function Sidebar() {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const updatedUser = async () => {
+      const data = await getCurrentUser();
+      dispatch(setUser(data));
+    };
+    updatedUser();
+  }, [user?._count.followers, user?._count.following]);
   return (
     <div className="sticky top-25">
       <Card className="bg-background ">
