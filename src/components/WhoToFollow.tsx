@@ -7,8 +7,8 @@ import FollowButton from "./FollowButton";
 async function WhoToFollow() {
   const user = await getCurrentUser();
   const randomUsers = await getRandomUsers();
-
-  if (user) {
+  if (!randomUsers) return;
+  if (user && randomUsers?.length > 0) {
     return (
       <Card className="bg-background ">
         <CardHeader>
@@ -30,7 +30,7 @@ async function WhoToFollow() {
                     <p className="text-muted-foreground text-xs truncate max-w-[140px]">
                       @{u.email?.split("@")[0] || "user"}
                     </p>
-                    <p className="text-sm text-muted-foreground">{u._count.followers} Followers</p>
+                    <p className="text-sm text-muted-foreground">{u._count.following} Followers</p>
                   </div>
                 </Link>
                 <FollowButton userId={u.id} />
