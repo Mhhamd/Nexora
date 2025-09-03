@@ -20,7 +20,7 @@ async function WhoToFollow() {
               <div
                 key={u.id}
                 className="flex w-full items-center justify-between hover:bg-muted/50 p-2 rounded-md transition-colors">
-                <Link href={`/profile/${u.email?.split("@")[0]}`} className="flex items-center gap-2">
+                <Link href={`/profile/${u.id}`} className="flex items-center gap-2">
                   <Avatar className="my-5 size-12">
                     <AvatarImage src={u.image ?? undefined} alt={u.name || "User"} />
                     <AvatarFallback>{u.name?.[0] || u.email?.split("@")[0]?.[0] || "U"}</AvatarFallback>

@@ -30,10 +30,7 @@ function Sidebar() {
         <CardContent>
           {isAuthenticated ? (
             <div className="flex items-center justify-center flex-col">
-              <Link
-                className="flex flex-col items-center justify-center w-full"
-                href={`/profile/${user?.email.split("@")[0]}`}
-                prefetch>
+              <Link className="flex flex-col items-center justify-center w-full" href={`/profile/${user?.id}`} prefetch>
                 <Avatar className="size-15 border-2">
                   <AvatarImage src={user?.image ?? undefined} alt={user?.name || ""} />
                   <AvatarFallback>{user?.name?.[0] || user?.email?.split("@")[0]}</AvatarFallback>

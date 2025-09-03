@@ -101,10 +101,7 @@ function PostCard({ post }: { post: Post }) {
         {/* Post Header */}
         <div className="flex items-start gap-2 w-full">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full min-w-0">
-            <Link
-              className="flex items-center gap-2 truncate"
-              href={`/profile/${post.author.email.split("@")[0]}`}
-              prefetch>
+            <Link className="flex items-center gap-2 truncate" href={`/profile/${post.author.id}`} prefetch>
               <Avatar>
                 <AvatarImage src={post.author.image ?? undefined} alt={post.author.name || "User"} />
                 <AvatarFallback>{post.author.name?.[0] || post.author.email?.split("@")[0] || "U"}</AvatarFallback>
@@ -112,7 +109,7 @@ function PostCard({ post }: { post: Post }) {
               <span className="truncate">{post.author.name?.split(" ")[0]}</span>
             </Link>
             <div className="flex items-center gap-2 text-muted-foreground text-sm sm:text-base truncate">
-              <Link href={`/profile/${post.author.email.split("@")[0]}`} className="truncate">
+              <Link href={`/profile/${post.author.id}`} className="truncate">
                 @{post.author.email?.split("@")[0]}
               </Link>
               <span className="hidden sm:inline">•</span>
@@ -183,7 +180,7 @@ function PostCard({ post }: { post: Post }) {
             {post.comments.length > 0 ? (
               post.comments.map((comment) => (
                 <div key={comment.id} className="flex items-start gap-3 mb-4">
-                  <Link href={`/profile/${comment.author.email.split("@")[0]}`}>
+                  <Link href={`/profile/${comment.author.id}`}>
                     <Avatar className="size-8 flex-shrink-0">
                       <AvatarImage src={comment.author.image ?? undefined} alt={comment.author?.name || "User"} />
                       <AvatarFallback>{comment.author?.name?.[0] || "U"}</AvatarFallback>
@@ -192,9 +189,7 @@ function PostCard({ post }: { post: Post }) {
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3">
                       <div className="flex items-center gap-x-2">
-                        <Link
-                          href={`/profile/${comment.author.email.split("@")[0]}`}
-                          className="font-medium text-sm truncate">
+                        <Link href={`/profile/${comment.author.id}`} className="font-medium text-sm truncate">
                           {comment.author.name || "Unknown"}
                         </Link>
                         <span className="text-xs text-muted-foreground sm:hidden">
@@ -202,7 +197,7 @@ function PostCard({ post }: { post: Post }) {
                         </span>
                       </div>
                       <Link
-                        href={`/profile/${comment.author.email.split("@")[0]}`}
+                        href={`/profile/${comment.author.id}`}
                         className="text-sm text-muted-foreground truncate hidden sm:inline">
                         @{comment.author.email.split("@")[0]}
                       </Link>
