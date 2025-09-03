@@ -15,7 +15,6 @@ import { logOut } from "@/server/auth";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/redux/slices/userSlice";
-import { useRouter } from "next/navigation";
 
 type SessionData = {
   user: {
@@ -28,7 +27,7 @@ type SessionData = {
 
 function UserMenu({ user }: SessionData) {
   const dispatch = useDispatch();
-  const router = useRouter();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -52,7 +51,7 @@ function UserMenu({ user }: SessionData) {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={`/profile/${user.email?.split("@")[0]}`} className="flex items-center gap-2 cursor-pointer">
+          <Link href={`/profile/${user.id}`} className="flex items-center gap-2 cursor-pointer">
             <User size={4} />
             Profile
           </Link>
