@@ -1,3 +1,4 @@
+"use server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "./user.action";
 import { revalidatePath } from "next/cache";
@@ -111,7 +112,7 @@ export async function isFollowing(userId: string) {
 export async function getUserPosts(userId: string) {
   try {
     const posts = await prisma.post.findMany({
-      where: { id: userId },
+      where: { authorId: userId },
       include: {
         author: {
           select: {
