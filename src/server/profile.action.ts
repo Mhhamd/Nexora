@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "./user.action";
+import { revalidatePath } from "next/cache";
 
 export async function getUserById(userId: string) {
   try {
@@ -151,5 +152,34 @@ export async function getUserPosts(userId: string) {
     return posts;
   } catch (error) {
     console.error("Error fetching user posts:", error);
+  }
+}
+
+export async function updateProfile(formData: FormData) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    const name = formData.get("name") as string;
+    const location = formData.get("location") as string;
+    const bio = formData.get("bio") as string;
+    const website = formData.get("website") as string;
+    const image = formData.get("image") as string;
+
+    const updatedProfile = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name,
+        location,
+        bio,
+        website,
+        image,
+      },
+    });
+    revalidatePath("/profile");
+    return { success: true, updatedUser: updatedProfile };
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return { success: false, error: "Failed to update profile" };
   }
 }
