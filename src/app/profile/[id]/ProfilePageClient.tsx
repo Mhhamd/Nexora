@@ -6,13 +6,16 @@ import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { toggleFollow } from "@/server/user.action";
-import { CalendarIcon, EditIcon, FileTextIcon, HeartIcon, LinkIcon, MapPinIcon } from "lucide-react";
+import { CalendarIcon, EditIcon, FileTextIcon, HeartIcon, LinkIcon, Loader2Icon, MapPinIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PostCard from "@/components/PostCard";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 type Posts = Awaited<ReturnType<typeof getUserPosts>>;
 type User = Awaited<ReturnType<typeof getUserById>>;
@@ -33,24 +36,31 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
     location: user.location || "",
     website: user.website || "",
   });
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const currentUser = authClient.useSession();
   const isOwner = currentUser.data?.user.id === user.id;
   const formattedDate = format(new Date(user.createdAt), "MMMM yyyy");
 
   const handleEditProfile = async () => {
-    const formData = new FormData();
-    Object.entries(editProfile).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    if (isEditingProfile) return;
+    try {
+      setIsEditingProfile(true);
+      const formData = new FormData();
+      Object.entries(editProfile).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
-    const result = await updateProfile(formData);
-    if (result?.success) {
-      setShowEditDialog(false);
-      toast.success("Profile updated successfully");
-    } else {
-      setShowEditDialog(false);
-      toast.error(result?.error);
+      const result = await updateProfile(formData);
+      if (result?.success) {
+        setShowEditDialog(false);
+        toast.success("Profile updated successfully");
+      }
+    } catch (error) {
+      console.error("Error in handleEditProfile: ", error);
+      toast.error("Failed to update your profile");
+    } finally {
+      setIsEditingProfile(false);
     }
   };
 
@@ -73,8 +83,8 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
   };
 
   return (
-    <div className="w-full">
-      <Card className="bg-background w-1/2 mx-auto">
+    <div className="w-full sm:px-0 px-5 ">
+      <Card className="bg-background w-full sm:w-1/2 mx-auto">
         <CardContent className="flex items-center justify-center flex-col">
           <Avatar className="size-25">
             <AvatarImage src={user.image ?? undefined} alt={user.name + "ProfilePicture"} />
@@ -83,7 +93,7 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
           <div className="text-center mt-4">
             <h1 className="font-semibold text-xl ">{user.name}</h1>
             <p className="text-sm text-muted-foreground mt-1"> @{user.email.split("@")[0]}</p>
-            <h1 className="mt-4">{user.bio || ""}</h1>
+            <h1 className="my-4">{user.bio || ""}</h1>
           </div>
           <div className="flex justify-between text-center w-full">
             <div>
@@ -118,24 +128,21 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
 
           {/* LOCATION & WEBSITE */}
           <div className="w-full mt-6 space-y-2 text-sm">
-            {user.location && (
-              <div className="flex items-center text-muted-foreground">
-                <MapPinIcon className="size-4 mr-2" />
-                {user.location}
-              </div>
-            )}
-            {user.website && (
-              <div className="flex items-center text-muted-foreground">
-                <LinkIcon className="size-4 mr-2" />
-                <a
-                  href={user.website.startsWith("http") ? user.website : `https://${user.website}`}
-                  className="hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  {user.website}
-                </a>
-              </div>
-            )}
+            <div className="flex items-center text-muted-foreground">
+              <MapPinIcon className="size-4 mr-2" />
+              {user.location || "No Location"}
+            </div>
+
+            <div className="flex items-center text-muted-foreground">
+              <LinkIcon className="size-4 mr-2" />
+              <a
+                href={user?.website?.startsWith("http") ? user.website : `https://${user.website}`}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer">
+                {user.website || "No Website"}
+              </a>
+            </div>
             <div className="flex items-center text-muted-foreground">
               <CalendarIcon className="size-4 mr-2" />
               Joined {formattedDate}
@@ -145,7 +152,7 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
       </Card>
 
       <Tabs defaultValue="posts" className="w-full mt-4 sm:mt-8">
-        <TabsList className="w-2/3 mx-auto flex justify-center items-center border-b rounded-none h-auto p-0 bg-transparent gap-3 sm:gap-5">
+        <TabsList className=" w-full sm:w-2/3 mx-auto flex justify-center items-center border-b rounded-none h-auto p-0 bg-transparent gap-3 sm:gap-5">
           <TabsTrigger
             value="posts"
             className="flex items-center cursor-pointer gap-2 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary
@@ -163,7 +170,7 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
           </TabsTrigger>
         </TabsList>
         <TabsContent value="posts" className="mt-6">
-          <div className="space-y-6 max-w-2/3 mx-auto">
+          <div className="space-y-6 w-full sm:max-w-2/3 mx-auto">
             {posts && posts.length > 0 ? (
               posts?.map((post) => <PostCard post={post} key={post.id} />)
             ) : (
@@ -172,7 +179,7 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
           </div>
         </TabsContent>
         <TabsContent value="likes" className="mt-6">
-          <div className="space-y-6 max-w-2/3 mx-auto">
+          <div className="space-y-6 w-full sm:max-w-2/3 mx-auto">
             {likedPosts && likedPosts.length > 0 ? (
               likedPosts.map((post) => <PostCard post={post} key={post.id} />)
             ) : (
@@ -182,12 +189,66 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
         </TabsContent>
       </Tabs>
 
-      {/* TODO: Add edit profile form and save functionality */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Profile</DialogTitle>
           </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Name</Label>
+              <Input
+                name="name"
+                value={editProfile.name}
+                onChange={(e) => setEditProfile({ ...editProfile, name: e.target.value })}
+                placeholder="Your name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Bio</Label>
+              <Textarea
+                name="bio"
+                value={editProfile.bio}
+                onChange={(e) => setEditProfile({ ...editProfile, bio: e.target.value })}
+                className="min-h-[100px]"
+                placeholder="Tell us about yourself"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Location</Label>
+              <Input
+                name="location"
+                value={editProfile.location}
+                onChange={(e) => setEditProfile({ ...editProfile, location: e.target.value })}
+                placeholder="Where are you based?"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Website</Label>
+              <Input
+                name="website"
+                value={editProfile.website}
+                onChange={(e) => setEditProfile({ ...editProfile, website: e.target.value })}
+                placeholder="Your personal website"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-3">
+            <DialogClose asChild>
+              <Button disabled={isEditingProfile} className="cursor-pointer" variant={"outline"}>
+                Close
+              </Button>
+            </DialogClose>
+            <Button disabled={isEditingProfile} className="cursor-pointer" onClick={handleEditProfile}>
+              {isEditingProfile ? (
+                <>
+                  <Loader2Icon size={16} className="animate-spin" /> Updating
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
