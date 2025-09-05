@@ -57,13 +57,6 @@ function UserMenu({ user }: SessionData) {
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link href="/settings" className="flex items-center gap-2 cursor-pointer">
-            <Settings size={4} />
-            Settings
-          </Link>
-        </DropdownMenuItem>
-
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Button
