@@ -149,6 +149,9 @@ export async function getUserPosts(userId: string) {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return posts;
   } catch (error) {
