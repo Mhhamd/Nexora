@@ -46,3 +46,26 @@ export async function getNotifications() {
     console.error("Error fetching notifications:", error);
   }
 }
+
+export async function markNotificationsAsRead(unreadIds: string[]) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    await prisma.notification.updateMany({
+      where: {
+        id: {
+          in: unreadIds,
+        },
+      },
+      data: {
+        read: true,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error making notification as read:", error);
+    return { success: false };
+  }
+}
