@@ -16,7 +16,7 @@ import {
   Loader2Icon,
   MapPinIcon,
 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
