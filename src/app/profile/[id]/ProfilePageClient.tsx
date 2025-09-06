@@ -6,8 +6,17 @@ import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { toggleFollow } from "@/server/user.action";
-import { CalendarIcon, EditIcon, FileTextIcon, HeartIcon, LinkIcon, Loader2Icon, MapPinIcon } from "lucide-react";
-import { useState } from "react";
+import {
+  CalendarIcon,
+  CameraIcon,
+  EditIcon,
+  FileTextIcon,
+  HeartIcon,
+  LinkIcon,
+  Loader2Icon,
+  MapPinIcon,
+} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -16,6 +25,7 @@ import PostCard from "@/components/PostCard";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
 
 type Posts = Awaited<ReturnType<typeof getUserPosts>>;
 type User = Awaited<ReturnType<typeof getUserById>>;
@@ -35,8 +45,11 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
     bio: user.bio || "",
     location: user.location || "",
     website: user.website || "",
+    image: user.image || undefined,
   });
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [imagePreview, setImagePreview] = useState("");
+  const [image, setImage] = useState<File | null>(null);
 
   const currentUser = authClient.useSession();
   const isOwner = currentUser.data?.user.id === user.id;
@@ -46,19 +59,47 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
     if (isEditingProfile) return;
     try {
       setIsEditingProfile(true);
-      const formData = new FormData();
-      Object.entries(editProfile).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
 
-      const result = await updateProfile(formData);
+      let uploadedImageUrl = editProfile.image;
+      if (image) {
+        const formData = new FormData();
+        formData.append("file", image);
+        formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+          formData
+        );
+
+        if (response.status !== 200) {
+          toast.error("Failed to upload image");
+          return;
+        }
+
+        uploadedImageUrl = response.data.secure_url;
+      }
+
+      const profileData = new FormData();
+      profileData.append("name", editProfile.name);
+      profileData.append("bio", editProfile.bio);
+      profileData.append("location", editProfile.location);
+      profileData.append("website", editProfile.website);
+      if (uploadedImageUrl) {
+        profileData.append("image", uploadedImageUrl);
+      }
+
+      const result = await updateProfile(profileData);
       if (result?.success) {
         setShowEditDialog(false);
+        setImagePreview("");
+        setImage(null);
         toast.success("Profile updated successfully");
+      } else {
+        toast.error("Failed to update profile");
       }
     } catch (error) {
-      console.error("Error in handleEditProfile: ", error);
-      toast.error("Failed to update your profile");
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update  profile");
     } finally {
       setIsEditingProfile(false);
     }
@@ -81,6 +122,32 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
       setIsUpdatingFollow(false);
     }
   };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
+        return;
+      }
+
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+      setImage(file);
+      const preview = URL.createObjectURL(file);
+      setImagePreview(preview);
+    }
+  };
+
+  useEffect(() => {
+    if (imagePreview) {
+      return () => {
+        URL.revokeObjectURL(imagePreview);
+      };
+    }
+  }, [imagePreview]);
 
   return (
     <div className="w-full sm:px-0 px-5 ">
@@ -194,6 +261,20 @@ function ProfilePageClient({ user, posts, likedPosts, inintalFollowing }: UserI)
           <DialogHeader>
             <DialogTitle>Edit Profile</DialogTitle>
           </DialogHeader>
+          <div className="flex items-center w-full justify-center">
+            <input onChange={handleImageChange} type="file" id="image" className="hidden" accept="image/*" />
+            <label
+              htmlFor="image"
+              className="hover:opacity-50 cursor-pointer transition-all duration-300 group relative">
+              <Avatar className="size-25">
+                <AvatarImage src={imagePreview || editProfile.image} alt={editProfile.name} />
+                <AvatarFallback>{user?.name?.[0] || user?.email?.split("@")[0]}</AvatarFallback>
+              </Avatar>
+              <div className="absolute inset-0 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <CameraIcon color="white" />
+              </div>
+            </label>
+          </div>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Name</Label>
