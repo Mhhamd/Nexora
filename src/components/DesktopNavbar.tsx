@@ -1,5 +1,5 @@
 "use client";
-import { BellIcon, HomeIcon, LogInIcon, UserPlusIcon } from "lucide-react";
+import { BellIcon, HomeIcon, LogInIcon, Send, UserPlusIcon } from "lucide-react";
 import ModeToggle from "./ModeToggle";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -61,7 +61,12 @@ function DesktopNavbar() {
               )}
             </Link>
           </Button>
-
+          <Button variant={"ghost"} className="cursor-pointer" asChild>
+            <Link href="/chat">
+              <Send />
+              <span className="lg:inline hidden">Messages</span>
+            </Link>
+          </Button>
           <UserMenu user={user} />
         </>
       ) : (
