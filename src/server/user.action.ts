@@ -16,6 +16,18 @@ export async function getCurrentUser() {
       image: true,
       website: true,
       location: true,
+      followers: {
+        select: {
+          followerId: true,
+          followingId: true,
+        },
+      },
+      following: {
+        select: {
+          followerId: true,
+          followingId: true,
+        },
+      },
       bio: true,
       _count: {
         select: {
