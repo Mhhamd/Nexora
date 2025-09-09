@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { usePathname } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getCurrentUser } from '@/server/user.action';
-import { setUser } from '@/redux/slices/userSlice';
-import { RootState } from '@/redux/store';
+import { usePathname } from "next/navigation";
+import Sidebar from "@/components/Sidebar";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getCurrentUser } from "@/server/user.action";
+import { setUser } from "@/redux/slices/userSlice";
+import { RootState } from "@/redux/store";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.user);
-  const hideLayout = pathname === '/login' || pathname === '/sign-up';
+  const hideLayout = pathname === "/login" || pathname === "/sign-up" || pathname === "/chat";
 
   useEffect(() => {
     const fetchUser = async () => {
