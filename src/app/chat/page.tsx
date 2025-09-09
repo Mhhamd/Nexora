@@ -1,12 +1,14 @@
 import Chatbox from "@/components/Chatbox";
 import UsersSidebar from "@/components/UsersSidebar";
 import { protectRoute } from "@/server/session";
+import { getMutualFollowers } from "@/server/user.action";
 
 export default async function ChatPage() {
   await protectRoute({
     requireAuth: true,
     redirectTo: "/login",
   });
+
   /* TODO: Update this ugly UI */
   /* TODO:Show the user's following users in a sidebar   */
   /* TODO: Get the chat when the user clicks on a user */
@@ -17,7 +19,7 @@ export default async function ChatPage() {
       <div className="w-64 flex-shrink-0 md:w-80 lg:w-96 h-full">
         <UsersSidebar />
       </div>
-      <div className="flex-1 border h-full">
+      <div className="flex-1 border rounded-tr-2xl rounded-br-2xl h-full">
         <Chatbox />
       </div>
     </div>
