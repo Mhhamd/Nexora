@@ -1,7 +1,6 @@
 import Chatbox from "@/components/Chatbox";
 import UsersSidebar from "@/components/UsersSidebar";
 import { protectRoute } from "@/server/session";
-import { getMutualFollowers } from "@/server/user.action";
 
 export default async function ChatPage() {
   await protectRoute({
@@ -9,8 +8,6 @@ export default async function ChatPage() {
     redirectTo: "/login",
   });
 
-  /* TODO: Update this ugly UI */
-  /* TODO:Show the user's following users in a sidebar   */
   /* TODO: Get the chat when the user clicks on a user */
   /* TODO: order the chat by "UpdatedAt" */
   /* TODO: Add realtime */
