@@ -135,3 +135,40 @@ export async function getRandomUsers() {
     return [];
   }
 }
+
+export async function getMutualFollowers() {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    const mutualFollowers = await prisma.user.findMany({
+      where: {
+        AND: [
+          {
+            following: {
+              some: {
+                followerId: user.id,
+              },
+            },
+          },
+          {
+            followers: {
+              some: {
+                followingId: user.id,
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        email: true,
+      },
+    });
+    return mutualFollowers;
+  } catch (error) {
+    console.error("Error getting mutual followers: ", error);
+  }
+}
