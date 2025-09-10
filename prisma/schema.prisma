@@ -26,13 +26,15 @@ model User {
     followers Follows[] @relation("follower")
     following Follows[] @relation("following")
 
-    notifications        Notification[]     @relation("userNotifications")
-    notificationsCreated Notification[]     @relation("notificationCreator")
+    notifications        Notification[] @relation("userNotifications")
+    notificationsCreated Notification[] @relation("notificationCreator")
     emailVerified        Boolean
     sessions             Session[]
     accounts             Account[]
     Messages             Messages[]
-    ChatParticipants     ChatParticipants[]
+
+    loggedInUser ChatParticipants[] @relation("loggedInUser")
+    selectedUser ChatParticipants[] @relation("selectedUser")
 
     @@map("user")
 }
@@ -175,12 +177,17 @@ model Chat {
 }
 
 model ChatParticipants {
-    id     String @id @default(cuid())
-    chatId String
-    userId String
+    id             String @id @default(cuid())
+    chatId         String
+    userId         String
+    selectedUserId String
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    loggedInUser User @relation("loggedInUser", fields: [userId], references: [id], onDelete: Cascade)
+    selectedUser User @relation("selectedUser", fields: [selectedUserId], references: [id], onDelete: Cascade)
+    chat         Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, selectedUserId])
+    @@index([userId, selectedUserId])
 }
 
 model Messages {
