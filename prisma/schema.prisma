@@ -32,10 +32,6 @@ model User {
     sessions             Session[]
     accounts             Account[]
 
-    messageSent     Message[]      @relation("sentMessages")
-    messageReceived Message[]      @relation("receivedMessages")
-    conversations   Conversation[] @relation("ConversationParticipants")
-
     @@map("user")
 }
 
@@ -164,27 +160,4 @@ model Verification {
     updatedAt  DateTime?
 
     @@map("verification")
-}
-
-model Conversation {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-
-    //Relations
-    participants User[]    @relation("ConversationParticipants")
-    messages     Message[]
-}
-
-model Message {
-    id             String   @id @default(uuid())
-    createdAt      DateTime @default(now())
-    content        String
-    senderId       String
-    receiverId     String
-    conversationId String
-
-    //Relations
-    conversation Conversation @relation(fields: [conversationId], references: [id])
-    sender       User         @relation("sentMessages", fields: [senderId], references: [id])
-    receiver     User         @relation("receivedMessages", fields: [receiverId], references: [id])
 }
