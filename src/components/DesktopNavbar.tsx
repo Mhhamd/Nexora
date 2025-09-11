@@ -61,12 +61,6 @@ function DesktopNavbar() {
               )}
             </Link>
           </Button>
-          <Button variant={"ghost"} className="cursor-pointer" asChild>
-            <Link href="/chat">
-              <Send />
-              <span className="lg:inline hidden">Messages</span>
-            </Link>
-          </Button>
           <UserMenu user={user} />
         </>
       ) : (
