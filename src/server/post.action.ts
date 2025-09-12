@@ -25,9 +25,11 @@ export const createPost = async (content: string, image: string) => {
   }
 };
 
-export const getPosts = async () => {
+export const getPosts = async (skip: number, take = 7) => {
   try {
     const posts = await prisma.post.findMany({
+      skip,
+      take,
       orderBy: {
         createdAt: "desc",
       },
