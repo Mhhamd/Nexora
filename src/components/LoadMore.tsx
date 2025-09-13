@@ -8,7 +8,7 @@ import PostSkeleton from "./skeletons/PostSkeleton";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
 
-function LoadMore({ initialPosts }: { initialPosts: Posts }) {
+function LoadMore({ initialPosts, refreshKey = 0 }: { initialPosts: Posts; refreshKey?: number }) {
   const [page, setPage] = useState(1);
   const [posts, setPosts] = useState(initialPosts);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +31,21 @@ function LoadMore({ initialPosts }: { initialPosts: Posts }) {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (initialPosts.length > 0 && refreshKey > 0) {
+      setPosts((currentPosts) => {
+        const currentIds = new Set(currentPosts.map((p) => p.id));
+        const newPostsFromServer = initialPosts.filter((newPost) => !currentIds.has(newPost.id));
+
+        if (newPostsFromServer.length > 0) {
+          return [...newPostsFromServer, ...currentPosts];
+        }
+
+        return currentPosts;
+      });
+    }
+  }, [refreshKey, initialPosts]);
 
   useEffect(() => {
     if (inView && !isLoading && hasMore) {

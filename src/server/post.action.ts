@@ -165,26 +165,36 @@ export const deletePost = async (postId: string) => {
 export const createComment = async (postId: string, content: string) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !content) return;
+    if (!user || !content) return { success: false, error: "Invalid input" };
 
     const post = await prisma.post.findUnique({
       where: { id: postId },
       select: { authorId: true },
     });
 
-    if (!post) return;
+    if (!post) return { success: false, error: "Post not found" };
 
-    const [comment] = await prisma.$transaction(async () => {
-      const newComment = await prisma.comment.create({
+    const transaction = await prisma.$transaction(async (tx) => {
+      const newComment = await tx.comment.create({
         data: {
           content,
           postId,
           authorId: user.id,
         },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+            },
+          },
+        },
       });
 
       if (user.id !== post.authorId) {
-        await prisma.notification.create({
+        await tx.notification.create({
           data: {
             type: "COMMENT",
             creatorId: user.id,
@@ -195,9 +205,14 @@ export const createComment = async (postId: string, content: string) => {
         });
       }
 
-      revalidatePath("/");
-      return [newComment];
+      return newComment;
     });
-    return { success: true, comment };
-  } catch (error) {}
+
+    revalidatePath("/");
+
+    return { success: true, comment: transaction };
+  } catch (error) {
+    console.error("Error in createComment", error);
+    return { success: false, error: "Failed to create comment" };
+  }
 };
