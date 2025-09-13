@@ -36,17 +36,29 @@ function LoadMore({ initialPosts, refreshKey = 0 }: { initialPosts: Posts; refre
     if (initialPosts.length > 0 && refreshKey > 0) {
       setPosts((currentPosts) => {
         const currentIds = new Set(currentPosts.map((p) => p.id));
+        const serverIds = new Set(initialPosts.map((p) => p.id));
+
+        //  Filter out posts that were deleted from server
+        const postsWithoutDeletions = currentPosts.filter((post) => serverIds.has(post.id));
+
+        // Find new posts from the server
         const newPostsFromServer = initialPosts.filter((newPost) => !currentIds.has(newPost.id));
 
-        if (newPostsFromServer.length > 0) {
-          return [...newPostsFromServer, ...currentPosts];
-        }
+        //  Find updated posts
+        const updatedPosts = initialPosts.filter((serverPost) => currentIds.has(serverPost.id));
 
-        return currentPosts;
+        const mergedPosts = [
+          ...newPostsFromServer,
+          ...postsWithoutDeletions.map((currentPost) => {
+            const updatedPost = updatedPosts.find((p) => p.id === currentPost.id);
+            return updatedPost || currentPost;
+          }),
+        ];
+
+        return mergedPosts;
       });
     }
   }, [refreshKey, initialPosts]);
-
   useEffect(() => {
     if (inView && !isLoading && hasMore) {
       loadMorePosts();
